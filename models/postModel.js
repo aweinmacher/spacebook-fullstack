@@ -1,4 +1,4 @@
-import { Stream } from 'stream';
+// import { Stream } from 'stream';
 
 var mongoose = require('mongoose');
 
@@ -10,7 +10,7 @@ var commentSchema = new mongoose.Schema({
 });
 
 var postSchema = new mongoose.Schema({
-    post: String,
+    postText: String,
     comments: [commentSchema]
 });
 

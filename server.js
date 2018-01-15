@@ -8,6 +8,13 @@ mongoose.connect('mongodb://localhost/spacebookDB', function() {
 
 var Post = require('./models/postModel');
 
+// TO CREATE COLLECTION (spacebookDB)
+// var dummyPost = new Post({
+//   postText: 'Hey there',
+//   comments: []
+// })
+// dummyPost.save();
+
 var app = express();
 app.use(express.static('public'));
 app.use(express.static('node_modules'));
@@ -19,7 +26,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // These will define your API:
 
 // 1) to handle getting all posts and their comments
+app.get('/posts', function (req, res) {
+  Post.find(function (err, data) {
+      if (err) throw err;
+      else res.send(data);
+  })
+})
+
+
 // 2) to handle adding a post
+app.post('/posts', function (req, res) {
+  var newobj = new Post(req.body);
+  newobj.save(function(err, data) {
+    if (err) throw err;
+    res.send(data);
+  })
+ 
+});
+
 // 3) to handle deleting a post
 // 4) to handle adding a comment to a post
 // 5) to handle deleting a comment from a post
