@@ -65,8 +65,20 @@ var SpacebookApp = function () {
   }
 
   var removePost = function (index) {
-    posts.splice(index, 1);
-    _renderPosts();
+    var id = posts[index]._id;
+    $.ajax({
+      method: "DELETE",
+      url: '/delete',
+      data: {'postId': id } ,
+      success: function (data) {
+        console.log(`Post deleted`);
+        posts.splice(index, 1);
+        _renderPosts();
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    })
   };
 
   var addComment = function (newComment, postIndex) {
