@@ -35,12 +35,14 @@ app.get('/posts', function (req, res) {
 
 
 // 2) to handle adding a post
-// app.post('/file', function (req, res) {
-//   fs.writeFile("test.txt", JSON.stringify(req.body), function (err) {
-//       if (err) throw err;
-//       else console.log("Data saved to file");
-//   });
-// })
+app.post('/posts', function (req, res) {
+  var newobj = new Post(req.body);
+  newobj.save(function(err, data) {
+    if (err) throw err;
+    res.send(data);
+  })
+ 
+});
 
 // 3) to handle deleting a post
 // 4) to handle adding a comment to a post
