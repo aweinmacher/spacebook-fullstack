@@ -45,6 +45,14 @@ app.post('/posts', function (req, res) {
 });
 
 // 3) to handle deleting a post
+app.delete('/delete', function(req, res){
+  var postId = req.body.postId;
+  Post.findByIdAndRemove(postId, function(err, data){
+    if (err) throw err;
+    res.send('post deleted');
+  })
+})
+
 // 4) to handle adding a comment to a post
 // 5) to handle deleting a comment from a post
 
