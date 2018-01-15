@@ -4,7 +4,24 @@ var SpacebookApp = function() {
 
   var $posts = $(".posts");
 
-  _renderPosts();
+  _renderPostsFromDB();
+
+  function _renderPostsFromDB() {
+    $.ajax({
+      method: "GET",
+      url: '/posts',
+      success: function (data) {
+        if (data.length) {
+          posts = data;
+        } else posts.push(data);
+        console.log(posts);
+        _renderPosts();
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });  
+  }
 
   function _renderPosts() {
     $posts.empty();
@@ -106,7 +123,7 @@ $posts.on('click', '.add-comment', function() {
 });
 
 $posts.on('click', '.remove-comment', function() {
-  var $commentsList = $(this).closest('.post').find('.comments-list');
+  //var $commentsList = $(this).closest('.post').find('.comments-list');
   var postIndex = $(this).closest('.post').index();
   var commentIndex = $(this).closest('.comment').index();
 
