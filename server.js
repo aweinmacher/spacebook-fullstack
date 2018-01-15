@@ -7,6 +7,7 @@ mongoose.connect('mongodb://localhost/spacebookDB', function() {
 })
 
 var Post = require('./models/postModel');
+var Comment = require('./models/postModel');
 
 // TO CREATE COLLECTION (spacebookDB)
 // var dummyPost = new Post({
@@ -41,7 +42,6 @@ app.post('/posts', function (req, res) {
     if (err) throw err;
     res.send(data);
   })
- 
 });
 
 // 3) to handle deleting a post
@@ -54,6 +54,30 @@ app.delete('/delete', function(req, res){
 })
 
 // 4) to handle adding a comment to a post
+app.post('/posts/:postId', function (req, res) {
+  var postId = req.params.postId;
+  //var newobj = new Comment(req.body);
+ 
+  //newobj.save(function(err, data) {
+    
+  Post.find({_id:postId}, function(err, data){
+      if (err) throw err;
+      res.send(data);
+    });
+
+  // newobj.save(function(err, data) {
+  //   if (err) throw err;
+  //   Post.findById(postId, function(err, data){
+  //     if (err) throw err;
+  //     else {
+  //       data.comments.push(newobj);
+  //       res.send(data);
+  //     }
+  //   })
+   // http://localhost:8000/posts/5a5cbf92c8f4861da4961b24
+  // })
+});
+
 // 5) to handle deleting a comment from a post
 
 app.listen(8000, function() {

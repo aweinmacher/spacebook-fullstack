@@ -11,11 +11,10 @@ var SpacebookApp = function () {
       method: "GET",
       url: '/posts',
       success: function (data) {
-        if (data.length) {
-          posts = data;
-        } else posts.push(data);
+        if (data) {
+        posts.push(data);
         console.log(posts);
-        _renderPosts();
+        _renderPosts();}
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
@@ -59,8 +58,8 @@ var SpacebookApp = function () {
     var source = $('#comment-template').html();
     var template = Handlebars.compile(source);
     for (var i = 0; i < posts[postIndex].comments.length; i++) {
-      var newHTML = template(posts[postIndex].comments[i]);
-      $commentsList.append(newHTML);
+        var newHTML = template(posts[postIndex].comments[i]);
+        $commentsList.append(newHTML);
     }
   }
 
@@ -82,8 +81,21 @@ var SpacebookApp = function () {
   };
 
   var addComment = function (newComment, postIndex) {
-    posts[postIndex].comments.push(newComment);
-    _renderComments(postIndex);
+    var postId = posts[postIndex]._id;
+    var buildUrl = `http://localhost:8000/posts/${postId}`;
+    $.ajax({
+      method: "POST",
+      url: buildUrl,
+      data: newComment,
+      success: function (data) {
+        console.log(`Comment added`);
+        posts[postIndex].comments.push(data);
+        _renderComments(postIndex);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    })
   };
 
 
