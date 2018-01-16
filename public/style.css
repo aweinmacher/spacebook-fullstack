@@ -13,3 +13,7 @@
 .comments-container {
     display: none;
 }
+
+.edit-form {
+    display: none;
+}
