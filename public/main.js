@@ -81,20 +81,24 @@ var SpacebookApp = function () {
 
   var addComment = function (newComment, postIndex) {
     var postId = posts[postIndex]._id;
-    var buildUrl = `http://localhost:8000/posts/${postId}`;
+    var buildUrl = `http://localhost:8000/posts/${postId}/comments`;
     $.ajax({
       method: "POST",
       url: buildUrl,
       data: newComment,
       success: function (data) {
         console.log(`Comment added`);
-        posts[postIndex].comments.push(data);
+        posts[postIndex] = data;
+        console.log(posts[postIndex]);
+        //posts[postIndex].comments.push(data);
         _renderComments(postIndex);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
       }
     })
+    // posts[postIndex].comments.push(newComment);
+    // _renderComments(postIndex);
   };
 
 
