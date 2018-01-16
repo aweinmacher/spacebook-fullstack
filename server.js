@@ -81,12 +81,14 @@ app.delete('/posts/:postId/delete/:comId', function(req, res){
 
 // 6) to handle editing posts via PUT request
 app.put('/edit/:postId', function(req, res){
-  var postId = req.param.postId;
+  var postId = req.params.postId;
+  var newText = req.body.newText;
 
-
-  
+  Post.findByIdAndUpdate(postId, { $set: { 'postText' : newText}}, { new: true }, function (err, data) {
+    if (err) throw err;
+    res.send(data);
+  });
 })
-
 
 app.listen(8000, function() {
   console.log("what do you want from me! get me on 8000 ;-)");

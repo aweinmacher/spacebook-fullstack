@@ -116,10 +116,22 @@ var SpacebookApp = function () {
   };
 
 
-  var editPost = function (postIndex, updPost) {
-
+  var editPost = function (updPostText, postIndex) {
+    var postId = posts[postIndex]._id;
+    var buildUrl = `http://localhost:8000/edit/${postId}`;
+    $.ajax({
+      method: "PUT",
+      url: buildUrl,
+      data: {'newText': updPostText},
+      success: function(data) {
+        posts[postIndex] = data;
+        _renderPosts();
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    })
   }
-
 
   return {
     addPost: addPost,
@@ -192,16 +204,17 @@ $posts.on('click', '.remove-comment', function () {
 
 $posts.on('click', '.upd-post', function () {
 
-  // var $updPost = $(this).clossest('.input-group').find('.upd-post-text');
+  var $updPost = $(this).closest('.input-group').find('.upd-post-text');
   
-  // if ($updPost.val() === "") {
-  //   alert("Please enter a new text");
-  //   return;
-  // }
+  if ($updPost.val() === "") {
+    alert("Please enter a new text");
+    return;
+  }
 
-  // var postIndex = $(this).closest('.post').index();
-  // var updPostText = { postText: $updPost.val() };
+  var postIndex = $(this).closest('.post').index();
+  var updPostText = $updPost.val();
 
-  // app.editPost(updPostText, postIndex);
+  app.editPost(updPostText, postIndex);
+  
   $(this).closest('.edit-form').toggleClass('show');
 });
