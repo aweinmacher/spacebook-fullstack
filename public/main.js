@@ -11,10 +11,9 @@ var SpacebookApp = function () {
       method: "GET",
       url: '/posts',
       success: function (data) {
-        if (data) {
         posts.push(data);
         console.log(posts);
-        _renderPosts();}
+        _renderPosts();
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);

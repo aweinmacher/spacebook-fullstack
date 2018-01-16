@@ -2,17 +2,16 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/spacebookDB', function() {
+mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient: true}, function() {
   console.log("DB connection established!!!");
 })
 
 var Post = require('./models/postModel');
-var Comment = require('./models/postModel');
 
 // TO CREATE COLLECTION (spacebookDB)
 // var dummyPost = new Post({
 //   postText: 'Hey there',
-//   comments: []
+//   comments: [ ]
 // })
 // dummyPost.save();
 
@@ -54,16 +53,16 @@ app.delete('/delete', function(req, res){
 })
 
 // 4) to handle adding a comment to a post
-app.post('/posts/:postId', function (req, res) {
-  var postId = req.params.postId;
-  //var newobj = new Comment(req.body);
+// app.post('/posts/:postId', function (req, res) {
+//   var postId = req.params.postId;
+//   //var newobj = new Comment(req.body);
  
-  //newobj.save(function(err, data) {
+//   //newobj.save(function(err, data) {
     
-  Post.find({_id:postId}, function(err, data){
-      if (err) throw err;
-      res.send(data);
-    });
+//   Post.find({_id:postId}, function(err, data){
+//       if (err) throw err;
+//       res.send(data);
+//     });
 
   // newobj.save(function(err, data) {
   //   if (err) throw err;
@@ -76,7 +75,7 @@ app.post('/posts/:postId', function (req, res) {
   //   })
    // http://localhost:8000/posts/5a5cbf92c8f4861da4961b24
   // })
-});
+// });
 
 // 5) to handle deleting a comment from a post
 
