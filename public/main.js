@@ -93,6 +93,7 @@ var SpacebookApp = function () {
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
       }
+    })
   };
 
 
