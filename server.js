@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/spacebookDB', function() {
+mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient: true}, function() {
   console.log("DB connection established!!!");
 })
 
@@ -11,7 +11,7 @@ var Post = require('./models/postModel');
 // TO CREATE COLLECTION (spacebookDB)
 // var dummyPost = new Post({
 //   postText: 'Hey there',
-//   comments: []
+//   comments: [ ]
 // })
 // dummyPost.save();
 
@@ -41,7 +41,6 @@ app.post('/posts', function (req, res) {
     if (err) throw err;
     res.send(data);
   })
- 
 });
 
 // 3) to handle deleting a post
@@ -54,7 +53,31 @@ app.delete('/delete', function(req, res){
 })
 
 // 4) to handle adding a comment to a post
+app.post('/posts/:postId/comments', function (req, res) {
+  var postId = req.params.postId;
+  Post.findById(postId, function(err, data){
+      if (err) throw err;
+      data.comments.push(req.body);
+      data.save(function(err, data){
+        if (err) throw err;
+        res.send(data);
+      });
+    });
+});
+
 // 5) to handle deleting a comment from a post
+app.delete('/posts/:postId/delete/:comId', function(req, res){
+  var postId = req.params.postId;
+  var comId = req.params.comId;
+  Post.findById(postId, function(err, data){
+    if (err) throw err;
+    data.comments.id(comId).remove();
+    data.save(function(err, data){
+      if (err) throw err;
+      res.send('comment deleted');
+    });
+  })
+})
 
 app.listen(8000, function() {
   console.log("what do you want from me! get me on 8000 ;-)");

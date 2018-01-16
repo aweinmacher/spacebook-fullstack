@@ -1,5 +1,3 @@
-// import { Stream } from 'stream';
-
 var mongoose = require('mongoose');
 
 //design the two schema below and use sub docs to define the relationship between posts and comments
@@ -11,9 +9,9 @@ var commentSchema = new mongoose.Schema({
 
 var postSchema = new mongoose.Schema({
     postText: String,
-    comments: [commentSchema]
-});
+    comments:  [commentSchema]
+},{ usePushEach: true });
 
-var Post = mongoose.model('post', postSchema)
+var Post = mongoose.model('post', postSchema);
 
-module.exports = Post
+module.exports = Post;
