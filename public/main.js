@@ -115,11 +115,18 @@ var SpacebookApp = function () {
     })
   };
 
+
+  var editPost = function (postIndex, updPost) {
+
+  }
+
+
   return {
     addPost: addPost,
     removePost: removePost,
     addComment: addComment,
     deleteComment: deleteComment,
+    editPost: editPost
   };
 };
 
@@ -148,6 +155,11 @@ $posts.on('click', '.toggle-comments', function () {
   $clickedPost.find('.comments-container').toggleClass('show');
 });
 
+$posts.on('click', '.edit-post', function () {
+  var $clickedPost = $(this).closest('.post');
+  $clickedPost.find('.edit-form').toggleClass('show');
+});
+
 $posts.on('click', '.add-comment', function () {
 
   var $comment = $(this).siblings('.comment');
@@ -174,4 +186,22 @@ $posts.on('click', '.remove-comment', function () {
   var commentIndex = $(this).closest('.comment').index();
 
   app.deleteComment(postIndex, commentIndex);
+});
+
+
+
+$posts.on('click', '.upd-post', function () {
+
+  // var $updPost = $(this).clossest('.input-group').find('.upd-post-text');
+  
+  // if ($updPost.val() === "") {
+  //   alert("Please enter a new text");
+  //   return;
+  // }
+
+  // var postIndex = $(this).closest('.post').index();
+  // var updPostText = { postText: $updPost.val() };
+
+  // app.editPost(updPostText, postIndex);
+  $(this).closest('.edit-form').toggleClass('show');
 });

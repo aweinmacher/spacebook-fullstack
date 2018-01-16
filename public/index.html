@@ -27,7 +27,18 @@
     </div>
     <script id="post-template" type="text/x-handlebars-template">
         <div class="post" data-id="{{_id}}"> {{postText}} <a class="toggle-comments" href="#"> Comments </a>
+            <button type="button" class="btn btn-warning edit-post">Edit Post</button>
             <button type="button" class="btn btn-danger remove-post">Remove Post</button>
+
+            <form class="edit-form col-md-12">
+                <div class="input-group">
+                  <input type="text" class="form-control upd-post-text" value="{{postText}}">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default upd-post" type="button">Update</button>
+                  </span>
+                </div>
+            </form>
+            
             <div class="comments-container">
                 <ul class="comments-list"></ul>
                 <input class="form-control name" type="text" placeholder="Name" />
