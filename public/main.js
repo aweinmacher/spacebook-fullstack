@@ -98,8 +98,21 @@ var SpacebookApp = function () {
 
 
   var deleteComment = function (postIndex, commentIndex) {
-    posts[postIndex].comments.splice(commentIndex, 1);
-    _renderComments(postIndex);
+    var postId = posts[postIndex]._id;
+    var comId = posts[postIndex].comments[commentIndex]._id;
+    var buildUrl = `http://localhost:8000/posts/${postId}/delete/${comId}`;
+    $.ajax({
+      method: "DELETE",
+      url: buildUrl,
+      success: function (data) {
+        console.log(`Comment deleted`);
+        posts[postIndex].comments.splice(commentIndex, 1);
+        _renderComments(postIndex);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    })
   };
 
   return {
