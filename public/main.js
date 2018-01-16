@@ -87,18 +87,12 @@ var SpacebookApp = function () {
       url: buildUrl,
       data: newComment,
       success: function (data) {
-        console.log(`Comment added`);
         posts[postIndex] = data;
-        console.log(posts[postIndex]);
-        //posts[postIndex].comments.push(data);
         _renderComments(postIndex);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         console.log(textStatus);
       }
-    })
-    // posts[postIndex].comments.push(newComment);
-    // _renderComments(postIndex);
   };
 
 
