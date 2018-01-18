@@ -7,6 +7,15 @@ var SpacebookApp = function () {
 
   _renderPostsFromDB();
 
+  function _findPostIndexInDbById(postId) {
+    for (let index in posts) {
+      if (posts[index]._id === postId) {
+        console.log(index);
+        return index;
+      }
+    }
+  }
+
   function _renderPostsFromDB() {
     $.ajax({
       method: "GET",
@@ -38,7 +47,7 @@ var SpacebookApp = function () {
     $.ajax({
       method: "POST",
       url: '/posts',
-      data: {'postText': newPost } ,
+      data: { 'postText': newPost },
       success: function (data) {
         console.log(`Data loaded`);
         posts.push(data);
@@ -50,28 +59,29 @@ var SpacebookApp = function () {
     })
   }
 
-
-  function _renderComments(postIndex) {
+  // TODO: split index in DB and in DOM
+  function _renderComments(postIndexInDB, postIndex) {
     var post = $(".post")[postIndex];
     $commentsList = $(post).find('.comments-list')
     $commentsList.empty();
     var source = $('#comment-template').html();
     var template = Handlebars.compile(source);
-    for (var i = 0; i < posts[postIndex].comments.length; i++) {
-        var newHTML = template(posts[postIndex].comments[i]);
-        $commentsList.append(newHTML);
+    for (var i = 0; i < posts[postIndexInDB].comments.length; i++) {
+      var newHTML = template(posts[postIndexInDB].comments[i]);
+      $commentsList.append(newHTML);
     }
   }
 
-  var removePost = function (index) {
-    var id = posts[index]._id;
+
+  var removePost = function (postId) {
+    var postIndex = _findPostIndexInDbById(postId);
     $.ajax({
       method: "DELETE",
       url: '/delete',
-      data: {'postId': id } ,
+      data: { 'postId': postId },
       success: function (data) {
         console.log(`Post deleted`);
-        posts.splice(index, 1);
+        posts.splice(postIndex, 1);
         _renderPosts();
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -80,8 +90,9 @@ var SpacebookApp = function () {
     })
   };
 
-  var addComment = function (newComment, postIndex) {
-    var postId = posts[postIndex]._id;
+
+  var addComment = function (newComment, postId) {
+    var postIndex = _findPostIndexInDbById(postId);
     var buildUrl = `${baseUrl}posts/${postId}/comments`;
     $.ajax({
       method: "POST",
@@ -98,8 +109,8 @@ var SpacebookApp = function () {
   };
 
 
-  var deleteComment = function (postIndex, commentIndex) {
-    var postId = posts[postIndex]._id;
+  var deleteComment = function (postId, commentId) {
+    var postIndex = _findPostIndexInDbById(postId);
     var comId = posts[postIndex].comments[commentIndex]._id;
     var buildUrl = `${baseUrl}posts/${postId}/delete/${comId}`;
     $.ajax({
@@ -117,14 +128,14 @@ var SpacebookApp = function () {
   };
 
 
-  var editPost = function (updPostText, postIndex) {
-    var postId = posts[postIndex]._id;
+  var editPost = function (updPostText, postId) {
+    var postIndex = _findPostIndexInDbById(postId);
     var buildUrl = `${baseUrl}edit/${postId}`;
     $.ajax({
       method: "PUT",
       url: buildUrl,
-      data: {'newText': updPostText},
-      success: function(data) {
+      data: { 'newText': updPostText },
+      success: function (data) {
         posts[postIndex] = data;
         _renderPosts();
       },
@@ -159,8 +170,8 @@ $('#addpost').on('click', function () {
 var $posts = $(".posts");
 
 $posts.on('click', '.remove-post', function () {
-  var index = $(this).closest('.post').index();;
-  app.removePost(index);
+  var postId = $(this).closest('.post').data('id');
+  app.removePost(postId);
 });
 
 $posts.on('click', '.toggle-comments', function () {
@@ -183,10 +194,10 @@ $posts.on('click', '.add-comment', function () {
     return;
   }
 
-  var postIndex = $(this).closest('.post').index();
+  var postId = $(this).closest('.post').data('id');
   var newComment = { text: $comment.val(), user: $user.val() };
 
-  app.addComment(newComment, postIndex);
+  app.addComment(newComment, postId);
 
   $comment.val("");
   $user.val("");
@@ -195,10 +206,10 @@ $posts.on('click', '.add-comment', function () {
 
 $posts.on('click', '.remove-comment', function () {
   //var $commentsList = $(this).closest('.post').find('.comments-list');
-  var postIndex = $(this).closest('.post').index();
+  var postId = $(this).closest('.post').data('id');
   var commentIndex = $(this).closest('.comment').index();
 
-  app.deleteComment(postIndex, commentIndex);
+  app.deleteComment(postId, commentIndex);
 });
 
 
@@ -206,22 +217,22 @@ $posts.on('click', '.remove-comment', function () {
 $posts.on('click', '.upd-post', function () {
 
   var $updPost = $(this).closest('.input-group').find('.upd-post-text');
-  
+
   if ($updPost.val() === "") {
     alert("Please enter a new text");
     return;
   }
 
-  var postIndex = $(this).closest('.post').index();
+  var postId = $(this).closest('.post').data('id');
   var updPostText = $updPost.val();
 
-  app.editPost(updPostText, postIndex);
-  
+  app.editPost(updPostText, postId);
+
   $(this).closest('.edit-form').toggleClass('show');
 });
 
 
-$( function() {
-  $( "#sortable" ).sortable();
-  $( "#sortable" ).disableSelection();
-} );
+$(function () {
+  $("#sortable").sortable();
+  $("#sortable").disableSelection();
+});
