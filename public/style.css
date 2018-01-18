@@ -1,5 +1,8 @@
 .post {
-    padding: 20px 0;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 0;
 }
 
 .btn-sm {

@@ -219,3 +219,9 @@ $posts.on('click', '.upd-post', function () {
   
   $(this).closest('.edit-form').toggleClass('show');
 });
+
+
+$( function() {
+  $( "#sortable" ).sortable();
+  $( "#sortable" ).disableSelection();
+} );

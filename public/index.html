@@ -3,6 +3,7 @@
 
 <head>
     <link href="bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="style.css" rel="stylesheet">
     <title></title>
 </head>
@@ -10,11 +11,11 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-md-offset-3">
+            <div class="col-md-8 col-md-offset-2">
                 <div class="page-header">
                     <h1>Spacebook</h1>
                 </div>
-                <div class="posts"></div>
+                <div id="sortable" class="posts"></div>
                 <form class="post-form">
                     <h3>Add a New Post</h3>
                     <div class="form-group">
@@ -26,7 +27,7 @@
         </div>
     </div>
     <script id="post-template" type="text/x-handlebars-template">
-        <div class="post" data-id="{{_id}}"> {{postText}} <a class="toggle-comments" href="#"> Comments </a>
+        <div class="post ui-state-default" data-id="{{_id}}"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span> {{postText}} <button class="btn toggle-comments" href="#"> Comments </button>
             <button type="button" class="btn btn-warning edit-post">Edit Post</button>
             <button type="button" class="btn btn-danger remove-post">Remove Post</button>
 
@@ -53,6 +54,7 @@
         </li>
     </script>
     <script src="jquery/dist/jquery.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="handlebars/dist/handlebars.js"></script>
     <script src="main.js"></script>
 </body>
