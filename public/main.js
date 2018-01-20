@@ -36,6 +36,11 @@ var SpacebookApp = function () {
     $posts.empty();
     var source = $('#post-template').html();
     var template = Handlebars.compile(source);
+    posts.sort(function(a,b){
+      return a.indexDOM-b.indexDOM;
+    });
+
+
     for (var i = 0; i < posts.length; i++) {
       var newHTML = template(posts[i]);
       console.log(newHTML);
@@ -234,3 +239,5 @@ $(function () {
   $("#sortable").sortable();
   $("#sortable").disableSelection();
 });
+
+// for every drag and drop - jquery.event.dragend ??? - should update indexDOM in posts
