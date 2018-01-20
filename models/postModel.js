@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var commentSchema = new mongoose.Schema({
     text: String,
     user: String
-});
+},{ usePushEach: true });
 
 var postSchema = new mongoose.Schema({
     postText: String,

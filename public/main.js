@@ -7,21 +7,20 @@ var SpacebookApp = function () {
 
   _renderPostsFromDB();
 
-  function _findPostIndexInDbById(postId) {
-    for (let index in posts) {
-      if (posts[index]._id === postId) {
-        console.log(index);
-        return index;
-      }
-    }
-  }
-
   function _renderPostsFromDB() {
     $.ajax({
       method: "GET",
       url: '/posts',
       success: function (data) {
-        posts = data;
+        for (let i=0; i<data.length; i++) {
+          posts.push({
+            _id: data[i]._id,
+            postText: data[i].postText,
+            comments: data[i].comments,
+            comOpen: false,
+            indexDOM: i
+          });
+        }
         console.log(posts);
         _renderPosts();
       },
@@ -31,6 +30,8 @@ var SpacebookApp = function () {
     });
   }
 
+
+  // TODO: to render in the order of indexDOM
   function _renderPosts() {
     $posts.empty();
     var source = $('#post-template').html();
@@ -47,7 +48,7 @@ var SpacebookApp = function () {
     $.ajax({
       method: "POST",
       url: '/posts',
-      data: { 'postText': newPost },
+      data: {'postText': newPost } ,
       success: function (data) {
         console.log(`Data loaded`);
         posts.push(data);
@@ -59,29 +60,28 @@ var SpacebookApp = function () {
     })
   }
 
-  // TODO: split index in DB and in DOM
-  function _renderComments(postIndexInDB, postIndex) {
+
+  function _renderComments(postIndex) {
     var post = $(".post")[postIndex];
     $commentsList = $(post).find('.comments-list')
     $commentsList.empty();
     var source = $('#comment-template').html();
     var template = Handlebars.compile(source);
-    for (var i = 0; i < posts[postIndexInDB].comments.length; i++) {
-      var newHTML = template(posts[postIndexInDB].comments[i]);
-      $commentsList.append(newHTML);
+    for (var i = 0; i < posts[postIndex].comments.length; i++) {
+        var newHTML = template(posts[postIndex].comments[i]);
+        $commentsList.append(newHTML);
     }
   }
 
-
-  var removePost = function (postId) {
-    var postIndex = _findPostIndexInDbById(postId);
+  var removePost = function (index) {
+    var id = posts[index]._id;
     $.ajax({
       method: "DELETE",
       url: '/delete',
-      data: { 'postId': postId },
+      data: {'postId': id } ,
       success: function (data) {
         console.log(`Post deleted`);
-        posts.splice(postIndex, 1);
+        posts.splice(index, 1);
         _renderPosts();
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -90,9 +90,8 @@ var SpacebookApp = function () {
     })
   };
 
-
-  var addComment = function (newComment, postId) {
-    var postIndex = _findPostIndexInDbById(postId);
+  var addComment = function (newComment, postIndex) {
+    var postId = posts[postIndex]._id;
     var buildUrl = `${baseUrl}posts/${postId}/comments`;
     $.ajax({
       method: "POST",
@@ -109,8 +108,8 @@ var SpacebookApp = function () {
   };
 
 
-  var deleteComment = function (postId, commentId) {
-    var postIndex = _findPostIndexInDbById(postId);
+  var deleteComment = function (postIndex, commentIndex) {
+    var postId = posts[postIndex]._id;
     var comId = posts[postIndex].comments[commentIndex]._id;
     var buildUrl = `${baseUrl}posts/${postId}/delete/${comId}`;
     $.ajax({
@@ -128,14 +127,14 @@ var SpacebookApp = function () {
   };
 
 
-  var editPost = function (updPostText, postId) {
-    var postIndex = _findPostIndexInDbById(postId);
+  var editPost = function (updPostText, postIndex) {
+    var postId = posts[postIndex]._id;
     var buildUrl = `${baseUrl}edit/${postId}`;
     $.ajax({
       method: "PUT",
       url: buildUrl,
-      data: { 'newText': updPostText },
-      success: function (data) {
+      data: {'newText': updPostText},
+      success: function(data) {
         posts[postIndex] = data;
         _renderPosts();
       },
@@ -170,8 +169,8 @@ $('#addpost').on('click', function () {
 var $posts = $(".posts");
 
 $posts.on('click', '.remove-post', function () {
-  var postId = $(this).closest('.post').data('id');
-  app.removePost(postId);
+  var index = $(this).closest('.post').index();;
+  app.removePost(index);
 });
 
 $posts.on('click', '.toggle-comments', function () {
@@ -194,10 +193,10 @@ $posts.on('click', '.add-comment', function () {
     return;
   }
 
-  var postId = $(this).closest('.post').data('id');
+  var postIndex = $(this).closest('.post').index();
   var newComment = { text: $comment.val(), user: $user.val() };
 
-  app.addComment(newComment, postId);
+  app.addComment(newComment, postIndex);
 
   $comment.val("");
   $user.val("");
@@ -206,28 +205,27 @@ $posts.on('click', '.add-comment', function () {
 
 $posts.on('click', '.remove-comment', function () {
   //var $commentsList = $(this).closest('.post').find('.comments-list');
-  var postId = $(this).closest('.post').data('id');
+  var postIndex = $(this).closest('.post').index();
   var commentIndex = $(this).closest('.comment').index();
 
-  app.deleteComment(postId, commentIndex);
+  app.deleteComment(postIndex, commentIndex);
 });
-
 
 
 $posts.on('click', '.upd-post', function () {
 
   var $updPost = $(this).closest('.input-group').find('.upd-post-text');
-
+  
   if ($updPost.val() === "") {
     alert("Please enter a new text");
     return;
   }
 
-  var postId = $(this).closest('.post').data('id');
+  var postIndex = $(this).closest('.post').index();
   var updPostText = $updPost.val();
 
-  app.editPost(updPostText, postId);
-
+  app.editPost(updPostText, postIndex);
+  
   $(this).closest('.edit-form').toggleClass('show');
 });
 
