@@ -2,7 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/spacebookDB',{useMongoClient: true}, function() {
+mongoose.connect(process.env.CONNECTION_STRING||'mongodb://localhost/spacebookDB',{useMongoClient: true}, function() {
   console.log("DB connection established!!!");
 })
 
@@ -90,6 +90,6 @@ app.put('/edit/:postId', function(req, res){
   });
 })
 
-app.listen(8000, function() {
+app.listen(process.env.PORT || '8080', function() {
   console.log("what do you want from me! get me on 8000 ;-)");
 });
