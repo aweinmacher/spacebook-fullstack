@@ -66,6 +66,19 @@ var SpacebookApp = function () {
   }
 
 
+  // change indexDOM for every post
+  function keepIndexDom(indexKeeper) {
+    for (let post in posts) {
+      for (let $post in indexKeeper) {
+        if (indexKeeper[$post].postId === posts[post]._id) {
+          posts[post].indexDOM = indexKeeper[$post].postIndex;
+          break;
+        }
+      } 
+    }
+    console.log(posts);
+  }
+
   function _renderComments(postIndex) {
     var post = $(".post")[postIndex];
     $commentsList = $(post).find('.comments-list')
@@ -240,4 +253,18 @@ $(function () {
   $("#sortable").disableSelection();
 });
 
-// for every drag and drop - jquery.event.dragend ??? - should update indexDOM in posts
+// for every drag and drop -  should update indexDOM in posts
+$posts.on('drop', '.post', function(){
+  var $postsArr =  $('.post');
+  var indexKeeper = [];
+  for (var $post in $postsArr) {
+    indexKeeper.push({
+      postId: $postsArr[$post].data()._id,
+      postIndex: $postsArr[$post].index()
+    });
+  }
+  console.log(indexKeeper);
+  keepIndexDom(indexKeeper);
+})
+
+// Uncaught ReferenceError: module is not defined at jquery.event.drag.js:10
