@@ -1,4 +1,4 @@
-var baseUrl = 'http://localhost:8000/';
+// var baseUrl = 'http://localhost:8000/';
 var SpacebookApp = function () {
 
   var posts = [];
@@ -82,7 +82,7 @@ var SpacebookApp = function () {
 
   var addComment = function (newComment, postIndex) {
     var postId = posts[postIndex]._id;
-    var buildUrl = `${baseUrl}posts/${postId}/comments`;
+    var buildUrl = `/posts/${postId}/comments`;
     $.ajax({
       method: "POST",
       url: buildUrl,
@@ -101,7 +101,7 @@ var SpacebookApp = function () {
   var deleteComment = function (postIndex, commentIndex) {
     var postId = posts[postIndex]._id;
     var comId = posts[postIndex].comments[commentIndex]._id;
-    var buildUrl = `${baseUrl}posts/${postId}/delete/${comId}`;
+    var buildUrl = `/posts/${postId}/delete/${comId}`;
     $.ajax({
       method: "DELETE",
       url: buildUrl,
@@ -119,7 +119,7 @@ var SpacebookApp = function () {
 
   var editPost = function (updPostText, postIndex) {
     var postId = posts[postIndex]._id;
-    var buildUrl = `${baseUrl}edit/${postId}`;
+    var buildUrl = `/edit/${postId}`;
     $.ajax({
       method: "PUT",
       url: buildUrl,
